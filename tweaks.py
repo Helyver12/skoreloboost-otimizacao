@@ -45,9 +45,10 @@ def reg_delete(hive, path, name):
         pass
 
 
-def run(cmd):
+def run(cmd, encoding="utf-8"):
+    """Executa um comando; use encoding="oem" para programas de console (powercfg etc.) em Windows localizado."""
     r = subprocess.run(cmd, capture_output=True, text=True, creationflags=NO_WINDOW,
-                       encoding="utf-8", errors="replace")
+                       encoding=encoding, errors="replace")
     return r.returncode, (r.stdout or "") + (r.stderr or "")
 
 
@@ -125,7 +126,7 @@ class PowerPlanTweak(Tweak):
     GUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}")
 
     def _active(self):
-        _, out = run(["powercfg", "/getactivescheme"])
+        _, out = run(["powercfg", "/getactivescheme"], encoding="oem")
         m = self.GUID.search(out)
         return (m.group(0).lower() if m else None), out
 
