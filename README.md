@@ -2,25 +2,26 @@
 
 Otimizador de Windows focado em gaming. Python + CustomTkinter.
 
-## Baixar e instalar em outro PC (Windows 10/11)
-**Jeito mais fácil (não precisa de Python):**
-1. Abra a aba **Releases** deste repositório (à direita, na página principal) e entre no GitHub com a sua conta.
-2. Baixe o `SkoreOptimizer.exe` da versão mais recente.
-3. Dê dois cliques e aceite o pedido de administrador.
+## Baixar e instalar em outro PC (Windows 10/11, sem instalar nada)
+O programa é um único arquivo, `SkoreOptimizer.exe`, que **já leva dentro dele tudo o que precisa** (Python, interface, bibliotecas).
+O outro PC **não precisa ter Python** nem instalar nada.
+
+1. Nesta página do repositório, clique em **Code → Download ZIP** (logado na sua conta do GitHub).
+2. **Extraia o ZIP** (botão direito → Extrair tudo). Não rode de dentro do ZIP.
+3. Dê dois cliques em **`SkoreOptimizer.exe`** e aceite o pedido de administrador.
    Se aparecer "O Windows protegeu o seu PC": **Mais informações → Executar assim mesmo** (o programa ainda não tem assinatura digital paga).
 
-> O repositório em si **não contém o `.exe`**: ele fica só nas Releases. Se você clonar ou baixar o ZIP do repositório,
-> o que vem é o código-fonte e o `SkoreOptimizer.bat`, que precisa do Python (veja abaixo).
-
-**Pelo código-fonte (precisa de Python 3.10+ com "Add python.exe to PATH"):**
-dê dois cliques em `SkoreOptimizer.bat`. Na primeira vez ele instala as bibliotecas sozinho. Se faltar o Python, ele avisa o que fazer.
+Também dá para baixar só o `.exe` pela aba **Releases**.
 
 **Se o app não abrir:** o Windows mostra uma janela com o motivo, e os detalhes ficam em `%APPDATA%\SkoreOptimizer\erro.log`.
+Outras causas possíveis: o antivírus bloqueou o arquivo, ou o Windows é anterior ao 10.
+
+> `SkoreOptimizer.bat` é só um atalho: se o `.exe` estiver na mesma pasta, ele o abre; senão, tenta rodar pelo código-fonte (precisa de Python 3.10+).
 
 ## Rodar
 - `dist/SkoreOptimizer.exe` (pede administrador) ou `SkoreOptimizer.bat` (usa Python).
 - Dev sem elevação: `python app.py --noadmin`
-- Recompilar: `python -m PyInstaller --noconfirm --onefile --noconsole --uac-admin --name SkoreOptimizer --icon assets/icon.ico --add-data "assets;assets" --collect-all customtkinter app.py`
+- Recompilar (depois, copie `dist/SkoreOptimizer.exe` para a raiz do repositório, que é o `.exe` que vai no "Baixar ZIP"): `python -m PyInstaller --noconfirm --onefile --noconsole --uac-admin --name SkoreOptimizer --icon assets/icon.ico --add-data "assets;assets" --collect-all customtkinter app.py`
 
 ## Estrutura
 - `tweaks.py` — motor: `RegTweak`, `PowercfgTweak`, `DnsTweak`, `PowerPlanTweak`, `ActionTweak`, lista `TWEAKS`, `PROFILES`, `BLOAT`, startup, GPU, backup.

@@ -2,7 +2,13 @@
 title Skore Optimizer
 cd /d "%~dp0"
 
-REM Procura o Python (comando "python" ou o atalho "py"). O falso "python" da Microsoft Store nao conta.
+REM 1) Se o SkoreOptimizer.exe estiver nesta pasta, abre ele (nao precisa de Python nem de nada instalado).
+if exist "%~dp0SkoreOptimizer.exe" (
+  start "" "%~dp0SkoreOptimizer.exe" %*
+  exit /b 0
+)
+
+REM 2) Sem o .exe: tenta rodar pelo codigo-fonte. Procura o Python (comando "python" ou o atalho "py").
 set "PY="
 python -c "import sys" >nul 2>&1 && set "PY=python"
 if not defined PY py -3 -c "import sys" >nul 2>&1 && set "PY=py -3"
@@ -22,13 +28,10 @@ exit /b 0
 
 :SEM_PYTHON
 echo.
-echo  NAO ENCONTREI O PYTHON NESTE PC.
+echo  NAO ENCONTREI O SkoreOptimizer.exe NEM O PYTHON NESTA PASTA/PC.
 echo.
-echo  Duas opcoes:
-echo   1^) A mais facil: baixe o SkoreOptimizer.exe na aba "Releases" do
-echo      repositorio no GitHub. Esse arquivo nao precisa de Python.
-echo   2^) Instale o Python 3.10 ou mais novo em https://www.python.org/downloads/
-echo      marcando a caixa "Add python.exe to PATH". Depois abra este arquivo de novo.
+echo  Baixe o SkoreOptimizer.exe na aba "Releases" do repositorio no GitHub
+echo  e deixe-o na mesma pasta deste arquivo (ele nao precisa de Python).
 echo.
 pause
 exit /b 1
