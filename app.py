@@ -7,6 +7,7 @@ import subprocess
 import sys
 import threading
 import time
+import traceback
 from tkinter import messagebox
 
 from PIL import Image
@@ -53,7 +54,34 @@ def elevate():
         exe, params = sys.executable, " ".join(f'"{a}"' for a in sys.argv[1:])
     else:
         exe = sys.executable
-    ctypes.windll.shell32.ShellExecuteW(None, "runas", exe, params, None, 1)
+    rc = ctypes.windll.shell32.ShellExecuteW(None, "runas", exe, params, None, 1)
+    if rc <= 32:   # o Windows recusou ou a pessoa cancelou o pedido de administrador
+        ctypes.windll.user32.MessageBoxW(
+            0, "O Skore Optimizer precisa de permissão de administrador para aplicar os ajustes.\n\n"
+               "Abra de novo e clique em \"Sim\" no aviso do Windows.", APP_NAME, 0x30)
+
+
+def log_erro(texto):
+    """Grava o erro em %APPDATA%/SkoreOptimizer/erro.log e devolve o caminho (ou None)."""
+    try:
+        pasta = os.path.join(os.environ.get("APPDATA", "."), "SkoreOptimizer")
+        os.makedirs(pasta, exist_ok=True)
+        caminho = os.path.join(pasta, "erro.log")
+        with open(caminho, "a", encoding="utf-8") as f:
+            f.write(f"\n===== {time.strftime('%Y-%m-%d %H:%M:%S')} | Python {sys.version.split()[0]} | "
+                    f"{'exe' if getattr(sys, 'frozen', False) else 'codigo-fonte'} =====\n{texto}\n")
+        return caminho
+    except OSError:
+        return None
+
+
+def mostrar_erro_fatal(texto):
+    """O app é 'sem console': sem isto, um erro na abertura faria o programa sumir sem aviso."""
+    caminho = log_erro(texto)
+    ultima = (texto.strip().splitlines() or ["erro desconhecido"])[-1]
+    msg = (f"O Skore Optimizer não conseguiu abrir.\n\n{ultima}\n\n"
+           + (f"Os detalhes foram salvos em:\n{caminho}\n\nMande esse arquivo para o suporte." if caminho else ""))
+    ctypes.windll.user32.MessageBoxW(0, msg, APP_NAME + " - erro", 0x10)
 
 
 class App(ctk.CTk):
@@ -125,6 +153,13 @@ class App(ctk.CTk):
         except queue.Empty:
             pass
         self.after(100, self._pump)
+
+    def report_callback_exception(self, exc, val, tb):
+        log_erro("".join(traceback.format_exception(exc, val, tb)))
+        try:
+            self.say("✖ Erro inesperado (detalhes em %APPDATA%\\SkoreOptimizer\\erro.log).")
+        except Exception:
+            pass
 
     def say(self, msg):
         def w():
@@ -1301,7 +1336,13 @@ class App(ctk.CTk):
 
 
 if __name__ == "__main__":
-    if "--noadmin" not in sys.argv and not is_admin():
-        elevate()
-        sys.exit(0)
-    App().mainloop()
+    try:
+        if "--noadmin" not in sys.argv and not is_admin():
+            elevate()
+            sys.exit(0)
+        App().mainloop()
+    except SystemExit:
+        raise
+    except Exception:
+        mostrar_erro_fatal(traceback.format_exc())
+        sys.exit(1)

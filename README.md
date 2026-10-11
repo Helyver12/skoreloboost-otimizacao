@@ -2,14 +2,20 @@
 
 Otimizador de Windows focado em gaming. Python + CustomTkinter.
 
-## Instalar em outro PC
-```
-git clone <URL-do-repositório>
-cd <pasta>
-pip install -r requirements.txt
-python app.py
-```
-Precisa de Windows 10/11 e Python 3.10+. O app pede administrador ao abrir.
+## Baixar e instalar em outro PC (Windows 10/11)
+**Jeito mais fácil (não precisa de Python):**
+1. Abra a aba **Releases** deste repositório (à direita, na página principal) e entre no GitHub com a sua conta.
+2. Baixe o `SkoreOptimizer.exe` da versão mais recente.
+3. Dê dois cliques e aceite o pedido de administrador.
+   Se aparecer "O Windows protegeu o seu PC": **Mais informações → Executar assim mesmo** (o programa ainda não tem assinatura digital paga).
+
+> O repositório em si **não contém o `.exe`**: ele fica só nas Releases. Se você clonar ou baixar o ZIP do repositório,
+> o que vem é o código-fonte e o `SkoreOptimizer.bat`, que precisa do Python (veja abaixo).
+
+**Pelo código-fonte (precisa de Python 3.10+ com "Add python.exe to PATH"):**
+dê dois cliques em `SkoreOptimizer.bat`. Na primeira vez ele instala as bibliotecas sozinho. Se faltar o Python, ele avisa o que fazer.
+
+**Se o app não abrir:** o Windows mostra uma janela com o motivo, e os detalhes ficam em `%APPDATA%\SkoreOptimizer\erro.log`.
 
 ## Rodar
 - `dist/SkoreOptimizer.exe` (pede administrador) ou `SkoreOptimizer.bat` (usa Python).
